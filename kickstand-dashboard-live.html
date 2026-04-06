@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kickstand | 2026 Marketing KPIs · Live</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange:#fd711a; --cyan:#13c9e8; --bg:#0d0d0d; --surface:#161616;
+      --surface2:#1e1e1e; --border:#272727; --text:#f0f0f0; --muted:#7a7a7a;
+      --dim:#3a3a3a; --sidebar:230px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Rubik','Proxima Nova','Inter',sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; }
+
+    .sidebar { width:var(--sidebar); min-height:100vh; background:var(--surface); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; z-index:100; overflow-y:auto; }
+    .sidebar-logo { padding:28px 22px 22px; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .logo-text { font-size:17px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; }
+    .logo-text span { color:var(--orange); }
+    .logo-tag { font-size:10px; color:var(--muted); margin-top:5px; letter-spacing:0.1em; text-transform:uppercase; }
+    .sidebar-nav { padding:18px 0; flex:1; }
+    .nav-section-label { font-size:9px; text-transform:uppercase; letter-spacing:0.14em; color:var(--dim); padding:14px 22px 5px; font-weight:600; }
+    .nav-item { display:flex; align-items:center; gap:10px; padding:10px 22px; font-size:13px; font-weight:400; color:var(--muted); cursor:pointer; border-left:2px solid transparent; transition:all 0.18s; text-decoration:none; }
+    .nav-item:hover { color:var(--text); background:rgba(255,255,255,0.03); border-left-color:rgba(253,113,26,0.5); }
+    .nav-item.active { color:var(--orange); background:rgba(253,113,26,0.07); border-left-color:var(--orange); font-weight:500; }
+    .nav-dot { width:7px; height:7px; border-radius:50%; background:var(--dim); flex-shrink:0; transition:background 0.18s; }
+    .nav-item.active .nav-dot,.nav-item:hover .nav-dot { background:var(--orange); }
+    .sidebar-footer { padding:18px 22px; border-top:1px solid var(--border); font-size:11px; color:var(--dim); line-height:1.6; flex-shrink:0; }
+    .year-badge { display:inline-block; background:rgba(253,113,26,0.12); color:var(--orange); border:1px solid rgba(253,113,26,0.25); border-radius:4px; padding:2px 8px; font-size:11px; font-weight:600; letter-spacing:0.05em; margin-bottom:6px; }
+
+    .main { margin-left:var(--sidebar); flex:1; padding:0 44px 80px; min-width:0; }
+
+    .topbar { padding:30px 0 22px; border-bottom:1px solid var(--border); margin-bottom:28px; display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+    .topbar-title { font-size:30px; font-weight:700; letter-spacing:-0.02em; line-height:1.1; }
+    .topbar-title em { color:var(--orange); font-style:normal; }
+    .topbar-meta { font-size:12px; color:var(--muted); margin-top:5px; }
+    .live-pill { display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:8px 16px; font-size:12px; color:var(--muted); white-space:nowrap; }
+    .live-pill .pulse { width:8px; height:8px; border-radius:50%; background:var(--cyan); animation:pulse 2s infinite; }
+    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(19,201,232,0.6)} 70%{box-shadow:0 0 0 6px rgba(19,201,232,0)} 100%{box-shadow:0 0 0 0 rgba(19,201,232,0)} }
+
+    .year-strip { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 22px; margin-bottom:36px; display:flex; align-items:center; gap:18px; }
+    .year-strip-label { font-size:11px; color:var(--muted); white-space:nowrap; }
+    .year-bar-wrap { flex:1; position:relative; }
+    .year-bar { height:5px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:visible; position:relative; }
+    .year-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--cyan) 0%,var(--orange) 100%); position:relative; transition:width 1s ease; }
+    .year-fill::after { content:'Today'; position:absolute; right:-1px; top:-22px; font-size:9px; color:var(--orange); white-space:nowrap; font-weight:500; letter-spacing:0.05em; }
+    .q-markers { position:absolute; top:-12px; left:0; right:0; pointer-events:none; }
+    .q-mark { position:absolute; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; }
+    .q-mark .q-tick { width:1px; height:20px; background:var(--dim); }
+    .q-mark .q-label { font-size:9px; color:var(--dim); margin-top:2px; letter-spacing:0.06em; }
+
+    .section { margin-bottom:52px; scroll-margin-top:28px; }
+    .section-header { margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+    .section-number { font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); margin-bottom:3px; font-weight:500; }
+    .section-title { font-size:17px; font-weight:600; color:var(--cyan); }
+    .section-desc { font-size:12px; color:var(--muted); margin-top:4px; max-width:580px; line-height:1.5; }
+
+    .grid { display:grid; gap:16px; }
+    .col-2 { grid-template-columns:repeat(2,1fr); }
+    .col-3 { grid-template-columns:repeat(3,1fr); }
+    .col-4 { grid-template-columns:repeat(4,1fr); }
+
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; position:relative; overflow:hidden; }
+    .card-top-line { position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--orange) 0%,transparent 70%); opacity:0.6; }
+    .card-top-line.cyan { background:linear-gradient(90deg,var(--cyan) 0%,transparent 70%); }
+    .card-label { font-size:10px; text-transform:uppercase; letter-spacing:0.11em; color:var(--muted); font-weight:500; margin-bottom:8px; }
+    .big-number { font-size:48px; font-weight:700; line-height:1; letter-spacing:-0.03em; }
+    .big-number .of { font-size:22px; font-weight:400; color:var(--muted); }
+    .card-sub { font-size:12px; color:var(--muted); margin-top:6px; line-height:1.5; }
+
+    .prog-wrap { margin-top:20px; }
+    .prog-row { display:flex; justify-content:space-between; font-size:10px; color:var(--muted); margin-bottom:5px; }
+    .prog-bar { height:5px; background:rgba(255,255,255,0.06); border-radius:3px; position:relative; overflow:visible; }
+    .prog-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--orange),#ff9550); transition:width 1s ease; }
+    .prog-fill.c { background:linear-gradient(90deg,var(--cyan),#5de8ff); }
+    .prog-marker { position:absolute; top:-3px; width:2px; height:11px; background:rgba(255,255,255,0.35); border-radius:1px; }
+
+    .badge { display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:600; letter-spacing:0.05em; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+    .badge.orange { background:rgba(253,113,26,0.12); color:var(--orange); border:1px solid rgba(253,113,26,0.25); }
+    .badge.cyan   { background:rgba(19,201,232,0.12); color:var(--cyan); border:1px solid rgba(19,201,232,0.25); }
+    .badge.grey   { background:rgba(255,255,255,0.05); color:var(--muted); border:1px solid var(--border); }
+    .badge.green  { background:rgba(0,200,120,0.12); color:#00c878; border:1px solid rgba(0,200,120,0.25); }
+
+    .gauge-layout { display:grid; grid-template-columns:1fr 180px; align-items:center; gap:20px; }
+    .gauge-wrap { position:relative; width:180px; height:100px; flex-shrink:0; }
+    .gauge-label { position:absolute; bottom:0; left:50%; transform:translateX(-50%); text-align:center; pointer-events:none; }
+    .gauge-val { font-size:32px; font-weight:700; line-height:1; }
+    .gauge-of { font-size:11px; color:var(--muted); }
+
+    .milestone-list { margin-top:18px; }
+    .milestone { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-top:1px solid var(--border); }
+    .milestone:first-child { border-top:none; padding-top:0; }
+    .ms-icon { width:32px; height:32px; border-radius:8px; background:var(--surface2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; font-weight:600; color:var(--muted); }
+    .ms-icon.active { background:rgba(253,113,26,0.12); border-color:rgba(253,113,26,0.3); color:var(--orange); }
+    .ms-icon.done { background:rgba(0,200,120,0.12); border-color:rgba(0,200,120,0.3); color:#00c878; }
+    .ms-text { flex:1; font-size:13px; line-height:1.3; min-width:0; }
+    .ms-sub { font-size:10px; color:var(--muted); margin-top:2px; }
+
+    .steps-row { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+    .step-chip { display:flex; align-items:center; gap:5px; font-size:10px; padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:var(--surface2); color:var(--muted); white-space:nowrap; }
+    .step-chip.done { background:rgba(0,200,120,0.1); border-color:rgba(0,200,120,0.3); color:#00c878; }
+
+    .media-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
+    .media-card { border:1px solid var(--border); border-radius:10px; overflow:hidden; background:var(--surface2); transition:border-color 0.2s; text-decoration:none; display:block; }
+    .media-card:hover { border-color:var(--cyan); }
+    .media-thumb { width:100%; aspect-ratio:16/9; background:#1a2535; display:flex; align-items:center; justify-content:center; font-size:28px; position:relative; overflow:hidden; }
+    .media-overlay { position:absolute; inset:0; background:rgba(19,201,232,0); display:flex; align-items:center; justify-content:center; transition:background 0.2s; font-size:20px; opacity:0; }
+    .media-card:hover .media-overlay { background:rgba(19,201,232,0.15); opacity:1; }
+    .media-info { padding:12px; }
+    .media-outlet { font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--cyan); font-weight:600; margin-bottom:4px; }
+    .media-headline { font-size:12px; color:var(--text); line-height:1.4; }
+    .media-date { font-size:10px; color:var(--muted); margin-top:4px; }
+
+    .social-scroll { overflow-x:auto; }
+    .social-table { width:100%; border-collapse:collapse; min-width:900px; }
+    .social-table th { text-align:center; font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--dim); padding:0 6px 12px; font-weight:600; }
+    .social-table th:first-child { text-align:left; width:170px; padding-left:0; }
+    .social-table td { padding:8px 6px; border-top:1px solid var(--border); text-align:center; vertical-align:middle; }
+    .social-table td:first-child { text-align:left; padding-left:0; }
+    .person-name { font-size:13px; font-weight:500; }
+    .person-role { font-size:10px; color:var(--muted); margin-top:2px; }
+    .count-cell { display:inline-flex; align-items:center; justify-content:center; width:44px; height:28px; border-radius:6px; font-size:12px; font-weight:600; border:1.5px solid var(--border); background:var(--surface2); color:var(--muted); }
+    .count-cell.full  { background:rgba(0,200,120,0.12); border-color:rgba(0,200,120,0.35); color:#00c878; }
+    .count-cell.good  { background:rgba(19,201,232,0.12); border-color:rgba(19,201,232,0.35); color:var(--cyan); }
+    .count-cell.low   { background:rgba(253,113,26,0.12); border-color:rgba(253,113,26,0.3); color:var(--orange); }
+    .count-cell.zero  { background:rgba(253,113,26,0.06); border-color:rgba(253,113,26,0.2); color:rgba(253,113,26,0.6); }
+    .count-cell.future { background:transparent; border-style:dashed; color:var(--dim); }
+    .total-cell { font-size:12px; font-weight:600; }
+
+    .data-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .data-table th { text-align:left; font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--dim); padding:0 12px 10px 0; font-weight:600; border-bottom:1px solid var(--border); }
+    .data-table td { padding:10px 12px 10px 0; border-top:1px solid var(--border); color:var(--muted); vertical-align:top; line-height:1.4; }
+    .data-table td:first-child { color:var(--text); }
+
+    .campaign-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; position:relative; }
+    .campaign-card-top-line { position:absolute; top:0; left:0; right:0; height:2px; border-radius:12px 12px 0 0; }
+    .campaign-quarter { font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:600; margin-bottom:6px; }
+    .campaign-title { font-size:15px; font-weight:600; margin-bottom:8px; }
+    .vertical-tag { display:inline-block; background:rgba(253,113,26,0.1); color:var(--orange); border:1px solid rgba(253,113,26,0.2); border-radius:4px; font-size:9px; font-weight:600; letter-spacing:0.08em; padding:2px 7px; text-transform:uppercase; margin-bottom:6px; }
+    .ad-link-btn { display:block; text-align:center; background:rgba(253,113,26,0.1); color:var(--orange); border:1px solid rgba(253,113,26,0.25); border-radius:6px; padding:8px; font-size:11px; font-weight:500; text-decoration:none; transition:background 0.15s; margin-top:10px; }
+    .ad-link-btn:hover { background:rgba(253,113,26,0.2); }
+    .stat-chip { display:inline-block; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:4px 10px; font-size:11px; color:var(--muted); margin:2px 4px 2px 0; }
+    .stat-chip strong { color:var(--text); }
+
+    .score-row { display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-top:1px solid var(--border); font-size:13px; gap:12px; }
+    .score-row:first-child { border-top:none; padding-top:0; }
+    .score-name { flex:1; }
+
+    .legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:16px; font-size:11px; color:var(--muted); padding-top:14px; border-top:1px solid var(--border); }
+    .legend-item { display:flex; align-items:center; gap:6px; }
+    .legend-dot { width:12px; height:12px; border-radius:50%; }
+
+    .loading-screen { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; z-index:999; transition:opacity 0.4s; }
+    .loading-screen.hidden { opacity:0; pointer-events:none; }
+    .loading-logo { font-size:20px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; }
+    .loading-logo span { color:var(--orange); }
+    .loading-bar-wrap { width:200px; height:3px; background:var(--dim); border-radius:2px; overflow:hidden; }
+    .loading-bar { height:100%; background:linear-gradient(90deg,var(--cyan),var(--orange)); border-radius:2px; animation:loadslide 1.8s ease-in-out infinite; }
+    @keyframes loadslide { 0%{width:0%;margin-left:0} 50%{width:60%;margin-left:20%} 100%{width:0%;margin-left:100%} }
+    .loading-msg { font-size:11px; color:var(--muted); }
+
+    .error-banner { background:rgba(253,113,26,0.08); border:1px solid rgba(253,113,26,0.25); border-radius:10px; padding:16px 20px; font-size:12px; color:var(--orange); margin-bottom:24px; line-height:1.6; }
+
+    ::-webkit-scrollbar { width:5px; height:5px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--dim); border-radius:3px; }
+
+    @media (max-width:900px) {
+      .sidebar { display:none; }
+      .main { margin-left:0; padding:0 20px 60px; }
+      .col-2,.col-3,.col-4 { grid-template-columns:1fr; }
+      .gauge-layout { grid-template-columns:1fr; }
+      .gauge-wrap { margin:0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">KICK<span>STAND</span></div>
+  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+  <div class="loading-msg" id="loading-msg">Connecting to Google Sheets…</div>
+</div>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">KICK<span>STAND</span></div>
+    <div class="logo-tag">2026 Marketing KPIs</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">KPIs</div>
+    <a href="#lead-gen"    class="nav-item active"><span class="nav-dot"></span>Lead Generation</a>
+    <a href="#pr-media"    class="nav-item"><span class="nav-dot"></span>PR &amp; Media</a>
+    <a href="#content"     class="nav-item"><span class="nav-dot"></span>Content Engine</a>
+    <a href="#exec-social" class="nav-item"><span class="nav-dot"></span>Executive Social</a>
+    <a href="#li-ads"      class="nav-item"><span class="nav-dot"></span>LinkedIn Ads</a>
+    <a href="#brand"       class="nav-item"><span class="nav-dot"></span>Brand Projects</a>
+    <div class="nav-section-label" style="margin-top:10px;">Summary</div>
+    <a href="#scorecard"   class="nav-item"><span class="nav-dot"></span>Scorecard</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="year-badge">2026</div><br>
+    Updated <span id="last-updated">—</span><br>
+    Kickstand Communications
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">2026 <em>Marketing KPIs</em></div>
+      <div class="topbar-meta">Jan 1 – Dec 31, 2026 &nbsp;·&nbsp; Kickstand Communications</div>
+    </div>
+    <div class="live-pill"><span class="pulse"></span><span id="live-pill-text">Loading…</span></div>
+  </div>
+
+  <div class="year-strip">
+    <span class="year-strip-label">Jan 1</span>
+    <div class="year-bar-wrap">
+      <div class="year-bar">
+        <div class="year-fill" id="year-fill" style="width:0%"></div>
+        <div class="q-markers">
+          <div class="q-mark" style="left:25%"><div class="q-tick"></div><div class="q-label">Q2</div></div>
+          <div class="q-mark" style="left:50%"><div class="q-tick"></div><div class="q-label">Q3</div></div>
+          <div class="q-mark" style="left:75%"><div class="q-tick"></div><div class="q-label">Q4</div></div>
+        </div>
+      </div>
+    </div>
+    <span class="year-strip-label" style="color:var(--text);font-weight:500;" id="year-pct">—%</span>
+    <span class="year-strip-label">Dec 31</span>
+  </div>
+
+  <!-- KPI 1 — LEAD GENERATION -->
+  <div class="section" id="lead-gen">
+    <div class="section-header">
+      <div>
+        <div class="section-number">KPI 1</div>
+        <div class="section-title">Lead Generation</div>
+        <div class="section-desc">Source 15 inbound leads through marketing channels by end of 2026.</div>
+      </div>
+      <span class="badge" id="lead-status-badge">—</span>
+    </div>
+    <div class="card">
+      <div class="card-top-line"></div>
+      <div class="gauge-layout">
+        <div>
+          <div class="card-label">Inbound Leads · YTD</div>
+          <div class="big-number" style="color:var(--orange);" id="lead-big-num">— <span class="of">/ —</span></div>
+          <div class="card-sub" id="lead-sub">Loading…</div>
+          <div class="prog-wrap">
+            <div class="prog-row"><span>0 leads</span><span id="lead-goal-label">Goal: —</span></div>
+            <div class="prog-bar">
+              <div class="prog-fill" id="lead-fill" style="width:0%"></div>
+              <div class="prog-marker" id="lead-marker" style="left:0%"></div>
+            </div>
+            <div style="margin-top:7px;font-size:11px;color:var(--muted);" id="lead-note"></div>
+          </div>
+          <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;" id="lead-stat-boxes"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div class="gauge-wrap">
+            <canvas id="leadGauge" width="180" height="100"></canvas>
+            <div class="gauge-label">
+              <div class="gauge-val" style="color:var(--orange);" id="gauge-val">—</div>
+              <div class="gauge-of" id="gauge-of">of — leads</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI 2 — PR & MEDIA -->
+  <div class="section" id="pr-media">
+    <div class="section-header">
+      <div>
+        <div class="section-number">KPI 2</div>
+        <div class="section-title">PR &amp; Media</div>
+        <div class="section-desc">Secure 8 earned media placements and make 8 award submissions by EOY.</div>
+      </div>
+    </div>
+    <div class="grid col-2" style="margin-bottom:16px;">
+      <div class="card">
+        <div class="card-top-line cyan"></div>
+        <div class="card-label">Earned Media Placements</div>
+        <div class="big-number" style="color:var(--cyan);" id="media-big-num">—</div>
+        <div class="card-sub" id="media-sub">Loading…</div>
+        <div class="prog-wrap">
+          <div class="prog-bar">
+            <div class="prog-fill c" id="media-fill" style="width:0%"></div>
+            <div class="prog-marker" id="media-marker" style="left:0%"></div>
+          </div>
+          <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;color:var(--muted);" id="media-pct-label">—</span>
+            <span class="badge" id="media-status-badge">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top-line"></div>
+        <div class="card-label">Award Submissions</div>
+        <div class="big-number" style="color:var(--orange);" id="awards-big-num">—</div>
+        <div class="card-sub" id="awards-sub">Loading…</div>
+        <div class="prog-wrap">
+          <div class="prog-bar">
+            <div class="prog-fill" id="awards-fill" style="width:0%"></div>
+            <div class="prog-marker" id="awards-marker" style="left:0%"></div>
+          </div>
+          <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;color:var(--muted);" id="awards-pct-label">—</span>
+            <span class="badge" id="awards-status-badge">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-top-line cyan"></div>
+      <div class="card-label" style="margin-bottom:16px;">Placement Gallery</div>
+      <div class="media-grid" id="media-gallery"><div style="color:var(--muted);font-size:12px;">Loading…</div></div>
+    </div>
+    <div class="card">
+      <div class="card-top-line"></div>
+      <div class="card-label" style="margin-bottom:16px;">Award Submissions Tracker</div>
+      <div id="awards-table-wrap"><div style="color:var(--muted);font-size:12px;">Loading…</div></div>
+    </div>
+  </div>
+
+  <!-- KPI 3 — CONTENT ENGINE -->
+  <div class="section" id="content">
+    <div class="section-header">
+      <div>
+        <div class="section-number">KPI 3</div>
+        <div class="section-title">Content Engine</div>
+        <div class="section-desc">Weekly blog posts, 1 email newsletter per quarter, and 1 cornerstone research or ebook per quarter.</div>
+      </div>
+    </div>
+    <div class="grid col-2" style="margin-bottom:16px;">
+      <div class="card">
+        <div class="card-top-line"></div>
+        <div class="card-label">Blog Posts · Weekly</div>
+        <div class="big-number" style="color:var(--orange);" id="blog-big-num">— <span class="of">/ 52</span></div>
+        <div class="card-sub" id="blog-sub">Cadence: 1 per week</div>
+        <div class="prog-wrap">
+          <div class="prog-row"><span>0</span><span>52 posts</span></div>
+          <div class="prog-bar">
+            <div class="prog-fill" id="blog-fill" style="width:0%"></div>
+            <div class="prog-marker" id="blog-marker" style="left:0%"></div>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Upcoming from Content Tracker</div>
+          <div id="blog-upcoming-list" style="font-size:12px;color:var(--text);line-height:1.9;"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top-line cyan"></div>
+        <div class="card-label">Email Newsletter · Quarterly</div>
+        <div class="big-number" style="color:var(--cyan);" id="newsletter-big-num">— <span class="of">/ 4</span></div>
+        <div class="card-sub">1 per quarter</div>
+        <div class="milestone-list" id="newsletter-milestones"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-top-line"></div>
+      <div class="card-label" style="margin-bottom:4px;">Cornerstone Content · Quarterly Themes &amp; Production Steps</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:20px;">1 research piece or ebook per quarter</div>
+      <div class="grid col-2" id="cornerstone-grid"></div>
+    </div>
+  </div>
+
+  <!-- KPI 4 — EXECUTIVE SOCIAL -->
+  <div class="section" id="exec-social">
+    <div class="section-header">
+      <div>
+        <div class="section-number">KPI 4</div>
+        <div class="section-title">Executive Social (LinkedIn)</div>
+        <div class="section-desc">Each Vertical Lead posts 8 times per month on LinkedIn — goal of 96 posts per person per year.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-top-line cyan"></div>
+      <div class="social-scroll">
+        <table class="social-table">
+          <thead>
+            <tr>
+              <th>Vertical Lead</th>
+              <th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>
+              <th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="social-tbody">
+            <tr><td colspan="14" style="color:var(--muted);text-align:center;padding:20px;">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="legend">
+        <span>Posts vs. goal of 8/month:</span>
+        <span class="legend-item"><span class="legend-dot" style="background:rgba(0,200,120,0.3);border:1.5px solid #00c878;"></span>8 ✓ Full goal</span>
+        <span class="legend-item"><span class="legend-dot" style="background:rgba(19,201,232,0.2);border:1.5px solid var(--cyan);"></span>5–7 Good</span>
+        <span class="legend-item"><span class="legend-dot" style="background:rgba(253,113,26,0.15);border:1.5px solid var(--orange);"></span>1–4 Low</span>
+        <span class="legend-item"><span class="legend-dot" style="background:rgba(253,113,26,0.06);border:1.5px dashed rgba(253,113,26,0.4);"></span>0 Missed</span>
+        <span class="legend-item"><span class="legend-dot" style="background:transparent;border:1.5px dashed var(--dim);"></span>Future</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI 5 — LINKEDIN ADS -->
+  <div class="section" id="li-ads">
+    <div class="section-header">
+      <div>
+        <div class="section-number">KPI 5</div>
+        <div class="section-title">LinkedIn Ads</div>
+        <div class="section-desc">1 brand awareness campaign per quarter + 4 baseline vertical ads running all year.</div>
+      </div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Quarterly Brand Campaigns</div>
+    <div class="grid col-4" style="margin-bottom:28px;" id="brand-campaigns-grid"><div style="color:var(--muted);font-size:12px;">Loading…</div></div>
+    <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Baseline Vertical Ads · Running All Year</div>
+    <div class="grid col-4" id="vertical-ads-grid"><div style="color:var(--muted);font-size:12px;">Loading…</div></div>
+  </div>
+
+  <!-- KPI 6 — BRAND PROJECTS -->
+  <div class="section" id="brand">
+    <div class="section-header">
+      <div>
+        <div class="section-number">KPI 6</div>
+        <div class="section-title">Brand Projects</div>
+        <div class="section-desc">Complete the Kickstand website rebrand by December 31, 2026.</div>
+      </div>
+      <span class="badge cyan">In Progress</span>
+    </div>
+    <div class="grid col-2">
+      <div class="card">
+        <div class="card-top-line cyan"></div>
+        <div class="card-label">Website Rebrand</div>
+        <div class="big-number" style="font-size:26px;color:var(--cyan);">In Progress</div>
+        <div class="card-sub">Deadline: December 31, 2026</div>
+        <div class="prog-wrap">
+          <div class="prog-row"><span>0% complete</span><span>100% = Launch</span></div>
+          <div class="prog-bar"><div class="prog-fill c" id="rebrand-fill" style="width:0%"></div></div>
+          <div style="margin-top:8px;font-size:11px;color:var(--muted);">Update % in Google Sheet as phases complete</div>
+        </div>
+        <div class="milestone-list" style="margin-top:20px;">
+          <div class="milestone">
+            <div class="ms-icon active">🎨</div>
+            <div class="ms-text">Design &amp; Brand Direction<div class="ms-sub">Visual identity, tone, guidelines</div></div>
+            <span class="badge orange">Active</span>
+          </div>
+          <div class="milestone">
+            <div class="ms-icon">🖥️</div>
+            <div class="ms-text">Development<div class="ms-sub">Build &amp; QA new site</div></div>
+            <span class="badge grey">Upcoming</span>
+          </div>
+          <div class="milestone">
+            <div class="ms-icon">✍️</div>
+            <div class="ms-text">Copywriting &amp; Content Migration<div class="ms-sub">Rewrite core pages</div></div>
+            <span class="badge grey">Upcoming</span>
+          </div>
+          <div class="milestone">
+            <div class="ms-icon">🚀</div>
+            <div class="ms-text">Launch<div class="ms-sub">Go live · EOY 2026</div></div>
+            <span class="badge grey">EOY 2026</span>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="scorecard">
+        <div class="card-top-line"></div>
+        <div class="card-label">2026 Scorecard</div>
+        <div style="margin-top:8px;" id="scorecard-rows"><div style="color:var(--muted);font-size:12px;padding:20px 0;">Loading…</div></div>
+        <div style="margin-top:20px;padding:14px;background:rgba(19,201,232,0.04);border:1px solid rgba(19,201,232,0.15);border-radius:8px;font-size:11px;color:var(--muted);line-height:1.8;">
+          <strong style="color:var(--cyan);display:block;margin-bottom:4px;">🔄 Live Data</strong>
+          Updates automatically from your Google Sheet. Refresh to see latest data.<br><br>
+          <a href="https://docs.google.com/spreadsheets/d/1rxnbJUkxTuh7xzqycFI44jaqCwMCc8ZATT1duEnACJk" target="_blank" style="color:var(--cyan);text-decoration:none;">Open Google Sheet →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────
+const SHEET_ID = '1rxnbJUkxTuh7xzqycFI44jaqCwMCc8ZATT1duEnACJk';
+const MONTHS   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// Quarter deadlines
+const Q_DEADLINES      = [new Date(2026,2,31), new Date(2026,5,30), new Date(2026,8,30), new Date(2026,11,31)];
+const Q_DEADLINE_LABELS = ['Mar 31, 2026','Jun 30, 2026','Sep 30, 2026','Dec 31, 2026'];
+
+// Cornerstone overrides — update here or via the Content_Tracker sheet
+// These are used as FALLBACKS if the sheet data is empty
+const CORNERSTONE_DEFAULTS = [
+  { q:'Q1', theme:'CMO Pulse',        created:true,  blogged:true,  social:true  },
+  { q:'Q2', theme:'Pitch Report',     created:false, blogged:false, social:false },
+  { q:'Q3', theme:'Undecided',        created:false, blogged:false, social:false },
+  { q:'Q4', theme:'CMO Pulse Update', created:false, blogged:false, social:false },
+];
+
+// Vertical name overrides for LinkedIn Ads baseline section
+// Key = person name in sheet, Value = vertical label to display
+const VERTICAL_NAMES = {
+  'lindsay': 'MarTech',
+  'rebecca': 'Robotics',
+  'sarah':   'Cyber',
+  'kara':    'EdTech',
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────
+function badgeClass(s) {
+  if (!s) return 'grey';
+  s = String(s).toLowerCase();
+  if (s.includes('on track')||s.includes('achieved')||s.includes('complete')||s.includes('sent')) return 'green';
+  if (s.includes('behind')||s.includes('overdue')||s.includes('due now')||s.includes('missing')||s.includes('low')) return 'orange';
+  if (s.includes('ahead')||s.includes('in progress')||s.includes('active')||s.includes('running')||s.includes('due soon')) return 'cyan';
+  return 'grey';
+}
+const badge = (status, label) => `<span class="badge ${badgeClass(status)}">${label||status||'—'}</span>`;
+const fmt   = n => (n===null||n===undefined||n==='') ? '—' : (typeof n==='number' ? (Number.isInteger(n)?String(n):n.toFixed(1)) : String(n));
+const pct   = (c,g) => (!g||c===null||c===undefined) ? 0 : Math.min(100, Math.round(c/g*100));
+
+function statBox(label, value, color) {
+  return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;min-width:90px;">
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);">${label}</div>
+    <div style="font-size:24px;font-weight:700;color:${color||'var(--text)'};margin-top:2px;">${value}</div>
+  </div>`;
+}
+
+// Smart quarter status — uses deadline proximity, not just "is current quarter"
+function quarterStatus(qIndex, isComplete) {
+  if (isComplete) return { label:'Complete', cls:'green', iconCls:'done' };
+  const now      = new Date();
+  const deadline = Q_DEADLINES[qIndex];
+  const daysLeft = Math.round((deadline - now) / 86400000);
+  const nowQ     = Math.floor(now.getMonth() / 3);
+
+  if (daysLeft < 0)    return { label:'Overdue',     cls:'orange', iconCls:'active' };
+  if (daysLeft <= 30)  return { label:'Due Soon',    cls:'cyan',   iconCls:'active' };
+  if (qIndex === nowQ) return { label:'In Progress', cls:'cyan',   iconCls:'active' };
+  if (qIndex < nowQ)   return { label:'Overdue',     cls:'orange', iconCls:'active' };
+  return               { label:'Upcoming',    cls:'grey',   iconCls:'' };
+}
+
+function yearProgress() {
+  const now=new Date(), start=new Date(now.getFullYear(),0,1), end=new Date(now.getFullYear()+1,0,1);
+  return (now-start)/(end-start)*100;
+}
+
+// ─── FETCH SHEET ─────────────────────────────────────────────────
+async function fetchSheet(name) {
+  const url  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}`;
+  const res  = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status} fetching "${name}"`);
+  const text = await res.text();
+  const raw  = text.replace(/^[^\{]*/,'').replace(/\);\s*$/,'');
+  const json = JSON.parse(raw);
+  if (json.status==='error') throw new Error(JSON.stringify(json.errors));
+  const cols = json.table.cols.map(c=>c.label||c.id);
+  return (json.table.rows||[]).map(r=>{
+    const obj={};
+    (r.c||[]).forEach((cell,i)=>{ obj[cols[i]]=(cell&&cell.v!=null)?cell.v:null; });
+    return obj;
+  });
+}
+
+// ─── YEAR STRIP ──────────────────────────────────────────────────
+function renderYearProgress() {
+  const p  = yearProgress(), str=p.toFixed(1);
+  const mi = new Date().getMonth();
+  const qn = mi<3?'Q1':mi<6?'Q2':mi<9?'Q3':'Q4';
+  document.getElementById('year-fill').style.width    = str+'%';
+  document.getElementById('year-pct').textContent     = str+'%';
+  document.getElementById('live-pill-text').textContent = `${qn} in Progress · ${str}% through 2026`;
+}
+
+// ─── LEAD GENERATION ─────────────────────────────────────────────
+function renderLeadGen(kpi, yp) {
+  const row = kpi.find(r=>String(Object.values(r)[0]||'').toLowerCase().match(/inbound|lead/));
+  if (!row) return;
+  const v=Object.values(row), cur=v[2]??0, goal=v[3]??15, pacing=v[4], status=v[6], updated=v[7];
+  if (updated) document.getElementById('last-updated').textContent = String(updated).substring(0,10);
+  const fp=pct(cur,goal);
+  const b=document.getElementById('lead-status-badge'); b.className=`badge ${badgeClass(status)}`; b.textContent=status||'—';
+  document.getElementById('lead-big-num').innerHTML    = `${fmt(cur)} <span class="of">/ ${fmt(goal)}</span>`;
+  document.getElementById('gauge-val').textContent     = fmt(cur);
+  document.getElementById('gauge-of').textContent      = `of ${fmt(goal)} leads`;
+  document.getElementById('lead-goal-label').textContent = `Goal: ${goal}`;
+  document.getElementById('lead-fill').style.width    = fp+'%';
+  document.getElementById('lead-marker').style.left   = Math.min(100,yp)+'%';
+  document.getElementById('lead-sub').textContent     = pacing?`Expected pacing by now: ${fmt(pacing)}`:`${fp}% of annual goal`;
+  document.getElementById('lead-note').textContent    = pacing?`↑ White marker = expected pacing (${fmt(pacing)}) · Progress = ${fp}%`:`Progress = ${fp}%`;
+  const rem=Math.max(0,goal-cur), qLeft=4-Math.floor(new Date().getMonth()/3);
+  document.getElementById('lead-stat-boxes').innerHTML =
+    statBox('Current',fmt(cur),'var(--orange)')+statBox('Remaining',fmt(rem),'var(--text)')+
+    statBox('Needed / Q', qLeft>0?Math.ceil(rem/qLeft):rem,'var(--text)');
+  new Chart(document.getElementById('leadGauge').getContext('2d'),{
+    type:'doughnut',
+    data:{datasets:[{data:[cur/goal,1-cur/goal],backgroundColor:['#fd711a','rgba(255,255,255,0.05)'],borderWidth:0,borderRadius:6}]},
+    options:{circumference:180,rotation:-90,cutout:'74%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{duration:1400,easing:'easeOutQuart'}}
+  });
+}
+
+// ─── PR & MEDIA ───────────────────────────────────────────────────
+function renderPRMedia(kpi, yp) {
+  function fill(row, pfx) {
+    if (!row) return;
+    const v=Object.values(row), cur=v[2]??0, goal=v[3]??8, status=v[6], fp=pct(cur,goal);
+    document.getElementById(`${pfx}-big-num`).innerHTML     = `${fmt(cur)} <span class="of">/ ${fmt(goal)}</span>`;
+    document.getElementById(`${pfx}-sub`).textContent       = `Goal: ${goal} · Expected by now: ~${Math.ceil(goal*yp/100)}`;
+    document.getElementById(`${pfx}-fill`).style.width      = fp+'%';
+    document.getElementById(`${pfx}-marker`).style.left     = Math.min(100,yp)+'%';
+    document.getElementById(`${pfx}-pct-label`).textContent = `${fp}% complete`;
+    const b=document.getElementById(`${pfx}-status-badge`); b.className=`badge ${badgeClass(status)}`; b.textContent=status||'—';
+  }
+  fill(kpi.find(r=>String(Object.values(r)[0]||'').toLowerCase().match(/media|placement/)),'media');
+  fill(kpi.find(r=>String(Object.values(r)[0]||'').toLowerCase().includes('award')),'awards');
+}
+
+function renderMediaGallery(rows) {
+  const el=document.getElementById('media-gallery');
+  const real=rows.filter(r=>{const v=Object.values(r);return v[1]||v[2];});
+  if (!real.length){el.innerHTML='<div style="color:var(--muted);font-size:12px;">No placements yet — add to the Earned_Media sheet.</div>';return;}
+  el.innerHTML=real.map(r=>{const v=Object.values(r);return `<a class="media-card" href="${v[4]||'#'}" target="_blank" rel="noopener">
+    <div class="media-thumb"><span>📰</span><div class="media-overlay">↗</div></div>
+    <div class="media-info"><div class="media-outlet">${v[1]||'—'}</div><div class="media-headline">${v[2]||''}</div><div class="media-date">${v[3]||''}${v[5]?' · '+v[5]:''}</div></div>
+  </a>`;}).join('');
+}
+
+function renderAwardsTable(rows) {
+  const el=document.getElementById('awards-table-wrap');
+  const real=rows.filter(r=>Object.values(r)[1]);
+  if (!real.length){el.innerHTML='<div style="color:var(--muted);font-size:12px;">No submissions yet — add to the Award_Submissions sheet.</div>';return;}
+  el.innerHTML=`<table class="data-table">
+    <thead><tr><th>Award</th><th>Organization</th><th>Category</th><th>Deadline</th><th>Status</th><th>Result</th></tr></thead>
+    <tbody>${real.map(r=>{const v=Object.values(r);return `<tr><td>${v[1]||'—'}</td><td>${v[2]||'—'}</td><td>${v[3]||'—'}</td><td>${v[5]||'—'}</td><td>${badge(v[6])}</td><td>${v[7]?badge(v[7],v[7]):'<span style="color:var(--dim)">—</span>'}</td></tr>`;}).join('')}</tbody>
+  </table>`;
+}
+
+// ─── CONTENT ENGINE ───────────────────────────────────────────────
+function renderContentEngine(kpi, contentRows, yp) {
+  // Blog
+  const blogRow=kpi.find(r=>String(Object.values(r)[0]||'').toLowerCase().includes('blog'));
+  if (blogRow){
+    const v=Object.values(blogRow), cur=v[2]??0, goal=v[3]??52;
+    document.getElementById('blog-big-num').innerHTML   = `${fmt(cur)} <span class="of">/ ${goal}</span>`;
+    document.getElementById('blog-fill').style.width   = pct(cur,goal)+'%';
+    document.getElementById('blog-marker').style.left  = Math.min(100,yp)+'%';
+    document.getElementById('blog-sub').textContent    = `Cadence: 1 per week · ~${Math.round(goal*yp/100)} expected by now`;
+  }
+  const blogs=contentRows.filter(r=>{const t=String(Object.values(r)[0]||'').toLowerCase();return t==='blog'||t==='blog post';}).slice(0,5);
+  document.getElementById('blog-upcoming-list').innerHTML=blogs.length
+    ?blogs.map(r=>{const v=Object.values(r);return `→ ${v[2]||'—'} <span style="color:var(--muted);">${v[4]?`(${v[4]})`:''}</span>`;}).join('<br>')
+    :'<span style="color:var(--dim);">No upcoming blog posts in tracker yet</span>';
+
+  // Newsletter
+  const newsRow=kpi.find(r=>String(Object.values(r)[0]||'').toLowerCase().includes('newsletter'));
+  const newsCount=newsRow?(Object.values(newsRow)[2]??0):0;
+  document.getElementById('newsletter-big-num').innerHTML=`${fmt(newsCount)} <span class="of">/ 4</span>`;
+  const newsletters=contentRows.filter(r=>String(Object.values(r)[0]||'').toLowerCase().includes('newsletter'));
+  document.getElementById('newsletter-milestones').innerHTML=['Q1','Q2','Q3','Q4'].map((q,i)=>{
+    const nlRow=newsletters.find(r=>String(Object.values(r)[1]||'').toUpperCase()===q);
+    const v=nlRow?Object.values(nlRow):[];
+    const done=nlRow&&(v[6]===true||String(v[8]||'').toLowerCase().match(/sent|complete/));
+    const {label,cls,iconCls}=quarterStatus(i,!!done);
+    return `<div class="milestone">
+      <div class="ms-icon ${iconCls}">${q}</div>
+      <div class="ms-text">${q} Newsletter<div class="ms-sub">Due by ${Q_DEADLINE_LABELS[i]}</div></div>
+      <span class="badge ${cls}">${label}</span>
+    </div>`;
+  }).join('');
+
+  // Cornerstone — merge sheet data with defaults
+  const cornerstones=contentRows.filter(r=>{const t=String(Object.values(r)[0]||'').toLowerCase();return t.includes('cornerstone')||t.includes('ebook')||t.includes('research');});
+  document.getElementById('cornerstone-grid').innerHTML=['Q1','Q2','Q3','Q4'].map((q,i)=>{
+    const sheetRow=cornerstones.find(r=>String(Object.values(r)[1]||'').toUpperCase()===q);
+    const def=CORNERSTONE_DEFAULTS[i];
+    const sv=sheetRow?Object.values(sheetRow):[];
+    // Prefer sheet data, fall back to defaults
+    const theme   = (sheetRow&&(sv[3]||sv[2])) || def.theme;
+    const created = sheetRow ? !!sv[5] : def.created;
+    const blogged = sheetRow ? !!sv[6] : def.blogged;
+    const social  = sheetRow ? !!sv[7] : def.social;
+    const isComplete = created && blogged && social;
+    const {label,cls,iconCls}=quarterStatus(i,isComplete);
+    const chip=(lbl,done)=>`<div class="step-chip${done?' done':''}"><span>${done?'✓':'○'}</span> ${lbl}</div>`;
+    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="ms-icon ${iconCls}" style="width:auto;padding:0 10px;border-radius:6px;font-size:11px;">${q}</div>
+        <span class="badge ${cls}">${label}</span>
+      </div>
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Theme / Topic</div>
+      <div style="font-size:13px;color:var(--text);padding:4px 0;border-bottom:1px dashed var(--dim);min-height:26px;">${theme||'<span style="color:var(--dim);">—</span>'}</div>
+      <div class="steps-row" style="margin-top:14px;">${chip('Content Created',created)}${chip('Blog Posted',blogged)}${chip('Social Posted',social)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── EXEC SOCIAL ─────────────────────────────────────────────────
+function renderSocialTable(rows) {
+  const GOAL=8, nowMi=new Date().getMonth();
+  const tbody=document.getElementById('social-tbody');
+  if (!rows||!rows.length){tbody.innerHTML='<tr><td colspan="14" style="color:var(--muted);text-align:center;padding:20px;">No data — add to Exec_Social sheet.</td></tr>';return;}
+  tbody.innerHTML=rows.map(r=>{
+    const v=Object.values(r), name=v[0]||'—', role=v[1]||'Vertical Lead';
+    const cells=MONTHS.map((m,mi)=>{
+      if (mi>nowMi) return `<td><div class="count-cell future">–</div></td>`;
+      const n=v[mi+2]!==null&&v[mi+2]!==undefined?Number(v[mi+2]):null;
+      if (n===null) return `<td><div class="count-cell zero">0</div></td>`;
+      const cls=n>=GOAL?'full':n>=5?'good':n>0?'low':'zero';
+      return `<td><div class="count-cell ${cls}">${n}</div></td>`;
+    }).join('');
+    const total=MONTHS.reduce((s,m,mi)=>s+(mi<=nowMi&&v[mi+2]!=null?Number(v[mi+2])||0:0),0);
+    return `<tr>
+      <td><div class="person-name">${name}</div><div class="person-role">${role}</div></td>
+      ${cells}
+      <td><span class="total-cell" style="color:${total>0?'var(--cyan)':'var(--muted)'}">
+        ${total}<span style="font-size:10px;color:var(--muted);font-weight:400;"> / ${GOAL*12}</span>
+      </span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── LINKEDIN ADS ─────────────────────────────────────────────────
+function renderLinkedInAds(rows) {
+  const accents=['linear-gradient(90deg,var(--orange),transparent)','linear-gradient(90deg,var(--cyan),transparent)','linear-gradient(90deg,var(--orange),transparent)','linear-gradient(90deg,var(--cyan),transparent)'];
+  const quarterly=rows.filter(r=>{const t=String(Object.values(r)[0]||'').toLowerCase();return t.includes('quarterly')||t.includes('brand');});
+  const baseline =rows.filter(r=>{const t=String(Object.values(r)[0]||'').toLowerCase();return t.includes('baseline')||t.includes('vertical');});
+  const qCamps=quarterly.length?quarterly:rows.slice(0,4);
+  const bCamps=baseline.length?baseline:rows.slice(4);
+
+  const chips=v=>[
+    v[8]?`<span class="stat-chip"><strong>${Number(v[8]).toLocaleString()}</strong> imps</span>`:'',
+    v[9]?`<span class="stat-chip"><strong>${Number(v[9]).toLocaleString()}</strong> clicks</span>`:'',
+    v[10]?`<span class="stat-chip"><strong>${v[10]}%</strong> CTR</span>`:''
+  ].filter(Boolean).join('');
+
+  document.getElementById('brand-campaigns-grid').innerHTML=qCamps.length?qCamps.slice(0,4).map((r,i)=>{
+    const v=Object.values(r), active=String(v[6]||'').toLowerCase().match(/active|running/);
+    return `<div class="campaign-card">
+      <div class="campaign-card-top-line" style="background:${accents[i%4]};opacity:${active?1:0.4};"></div>
+      <div class="campaign-quarter">${v[1]||`Q${i+1}`} Brand Campaign</div>
+      <div class="campaign-title">${v[2]||`Campaign ${i+1}`}</div>
+      ${v[3]?`<div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5;">${v[3]}</div>`:''}
+      ${chips(v)?`<div style="margin:8px 0;">${chips(v)}</div>`:''}
+      <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;">
+        ${badge(v[6])}
+        <a href="${v[7]||'https://www.linkedin.com/campaignmanager/'}" target="_blank" class="ad-link-btn" style="margin:0;font-size:10px;padding:4px 10px;">View →</a>
+      </div>
+    </div>`;
+  }).join(''):'<div style="color:var(--muted);font-size:12px;">No quarterly campaigns yet.</div>';
+
+  // Baseline ads — resolve vertical name from VERTICAL_NAMES map
+  document.getElementById('vertical-ads-grid').innerHTML=bCamps.length?bCamps.slice(0,4).map((r,i)=>{
+    const v=Object.values(r);
+    // v[1] is Quarter_Vertical — try to map person name to vertical label
+    const rawLabel=String(v[1]||`Vertical ${i+1}`);
+    const verticalLabel=VERTICAL_NAMES[rawLabel.toLowerCase()]||rawLabel;
+    return `<div>
+      <div class="vertical-tag">${verticalLabel}</div>
+      <div class="campaign-card">
+        <div class="campaign-card-top-line" style="background:${accents[i%4]};"></div>
+        ${v[2]?`<div style="font-size:13px;font-weight:600;margin-bottom:6px;">${v[2]}</div>`:''}
+        ${v[3]?`<div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;">${v[3]}</div>`:''}
+        ${chips(v)?`<div>${chips(v)}</div>`:''}
+        <div style="margin-top:8px;">${badge(v[6])}</div>
+      </div>
+      <a href="${v[7]||'https://www.linkedin.com/campaignmanager/'}" target="_blank" class="ad-link-btn">📊 View Performance</a>
+    </div>`;
+  }).join(''):'<div style="color:var(--muted);font-size:12px;">No baseline vertical ads yet.</div>';
+}
+
+// ─── SCORECARD ────────────────────────────────────────────────────
+function renderScorecard(kpi) {
+  const icons={inbound:'🎯',lead:'🎯',media:'📰',placement:'📰',earned:'📰',award:'🏆',blog:'✍️',newsletter:'📧',cornerstone:'📚',social:'💼',exec:'💼',linkedin:'📣',ads:'📣',website:'🌐',rebrand:'🌐'};
+  function icon(n){const s=(n||'').toLowerCase();for(const[k,v]of Object.entries(icons)){if(s.includes(k))return v;}return'📊';}
+  document.getElementById('scorecard-rows').innerHTML=kpi.map(r=>{
+    const v=Object.values(r), name=v[0]||'—', cur=v[2], goal=v[3], status=v[6];
+    const val=cur!==null&&goal!==null?`${fmt(cur)} / ${fmt(goal)}`:cur!==null?fmt(cur):(status||'—');
+    return `<div class="score-row"><span class="score-name">${icon(name)} ${name}</span>${badge(status,val)}</div>`;
+  }).join('');
+}
+
+function renderRebrand(kpi) {
+  const row=kpi.find(r=>String(Object.values(r)[0]||'').toLowerCase().match(/rebrand|website/));
+  if (row){const cur=Object.values(row)[2]??0;document.getElementById('rebrand-fill').style.width=Math.min(100,cur)+'%';}
+}
+
+function showError(msg) {
+  const el=document.createElement('div'); el.className='error-banner';
+  el.innerHTML=`<strong>⚠️ Couldn't load live data</strong><br>${msg}<br><br>Make sure your Google Sheet is set to <strong>"Anyone with the link can view"</strong>. <a href="https://docs.google.com/spreadsheets/d/${SHEET_ID}" target="_blank" style="color:var(--orange);">Open sheet →</a>`;
+  const main=document.querySelector('.main');
+  main.insertBefore(el,main.querySelector('.topbar').nextSibling);
+}
+
+function initNav() {
+  const links=document.querySelectorAll('.nav-item');
+  document.querySelectorAll('.section').forEach(s=>{
+    new IntersectionObserver(entries=>{
+      entries.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));const lnk=document.querySelector(`.nav-item[href="#${e.target.id}"]`);if(lnk)lnk.classList.add('active');}});
+    },{threshold:0.3}).observe(s);
+  });
+}
+
+// ─── MAIN ────────────────────────────────────────────────────────
+(async()=>{
+  renderYearProgress();
+  initNav();
+  const yp=yearProgress(), setMsg=m=>document.getElementById('loading-msg').textContent=m;
+  try {
+    setMsg('Loading KPI summary…');
+    const kpi=await fetchSheet('KPI_Summary');
+    renderLeadGen(kpi,yp); renderPRMedia(kpi,yp); renderScorecard(kpi); renderRebrand(kpi);
+
+    setMsg('Loading earned media…');
+    renderMediaGallery(await fetchSheet('Earned_Media'));
+
+    setMsg('Loading award submissions…');
+    renderAwardsTable(await fetchSheet('Award_Submissions'));
+
+    setMsg('Loading content tracker…');
+    renderContentEngine(kpi, await fetchSheet('Content_Tracker'), yp);
+
+    setMsg('Loading executive social…');
+    renderSocialTable(await fetchSheet('Exec_Social'));
+
+    setMsg('Loading LinkedIn ads…');
+    renderLinkedInAds(await fetchSheet('LinkedIn_Ads'));
+
+    const ls=document.getElementById('loading-screen');
+    ls.classList.add('hidden'); setTimeout(()=>ls.remove(),500);
+  } catch(err) {
+    console.error(err);
+    document.getElementById('loading-screen').classList.add('hidden');
+    showError(err.message||'Unknown error. Check browser console.');
+  }
+})();
+</script>
+</body>
+</html>
