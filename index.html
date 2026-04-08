@@ -197,6 +197,7 @@
     <a href="#content"     class="nav-item"><span class="nav-dot"></span>Content Engine</a>
     <a href="#exec-social" class="nav-item"><span class="nav-dot"></span>Executive Social</a>
     <a href="#li-ads"      class="nav-item"><span class="nav-dot"></span>LinkedIn Ads</a>
+    <a href="#analytics"   class="nav-item"><span class="nav-dot"></span>Analytics</a>
     <a href="#brand"       class="nav-item"><span class="nav-dot"></span>Brand Projects</a>
     <div class="nav-section-label" style="margin-top:10px;">Summary</div>
     <a href="#scorecard"   class="nav-item"><span class="nav-dot"></span>Scorecard</a>
@@ -421,6 +422,150 @@
     <div class="grid col-4" style="margin-bottom:28px;" id="brand-campaigns-grid"><div style="color:var(--muted);font-size:12px;">Loading…</div></div>
     <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Baseline Vertical Ads · Running All Year</div>
     <div class="grid col-4" id="vertical-ads-grid"><div style="color:var(--muted);font-size:12px;">Loading…</div></div>
+  </div>
+
+  <!-- KPI 7 — ANALYTICS -->
+  <div class="section" id="analytics">
+    <div class="section-header">
+      <div>
+        <div class="section-number">KPI 7</div>
+        <div class="section-title">Analytics</div>
+        <div class="section-desc">Website performance via Google Analytics and LinkedIn company page organic reach. Update the GA_Analytics and LI_Organic tabs in your Google Sheet monthly.</div>
+      </div>
+    </div>
+
+    <!-- Google Analytics -->
+    <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+      <span style="font-size:16px;">📊</span> Google Analytics
+    </div>
+    <div class="grid col-3" style="margin-bottom:16px;">
+      <div class="card">
+        <div class="card-top-line cyan"></div>
+        <div class="card-label">Unique Visitors · Latest Period</div>
+        <div class="big-number" style="color:var(--cyan);" id="ga-visitors">—</div>
+        <div class="card-sub" id="ga-visitors-sub">Loading…</div>
+        <div class="prog-wrap">
+          <div class="prog-row"><span>0</span><span id="ga-visitors-goal-label">Goal: —</span></div>
+          <div class="prog-bar">
+            <div class="prog-fill c" id="ga-visitors-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top-line"></div>
+        <div class="card-label">Conversions · Latest Period</div>
+        <div class="big-number" style="color:var(--orange);" id="ga-conversions">—</div>
+        <div class="card-sub" id="ga-conversions-sub">Loading…</div>
+        <div class="prog-wrap">
+          <div class="prog-row"><span>0</span><span id="ga-conv-goal-label">Goal: —</span></div>
+          <div class="prog-bar">
+            <div class="prog-fill" id="ga-conv-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top-line cyan"></div>
+        <div class="card-label">Top Traffic Sources</div>
+        <div id="ga-sources-list" style="margin-top:8px;font-size:13px;line-height:2;">Loading…</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:28px;">
+      <div class="card-top-line"></div>
+      <div class="card-label" style="margin-bottom:14px;">Top Pages</div>
+      <div id="ga-pages-table">Loading…</div>
+    </div>
+
+    <!-- LinkedIn Organic -->
+    <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+      <span style="font-size:16px;">💼</span> LinkedIn Organic
+    </div>
+    <div class="grid col-3" style="margin-bottom:16px;">
+      <div class="card">
+        <div class="card-top-line cyan"></div>
+        <div class="card-label">Impressions · Latest Period</div>
+        <div class="big-number" style="color:var(--cyan);" id="li-impressions">—</div>
+        <div class="card-sub" id="li-impressions-sub">Loading…</div>
+        <div class="prog-wrap">
+          <div class="prog-row"><span>0</span><span id="li-imp-goal-label">Goal: —</span></div>
+          <div class="prog-bar">
+            <div class="prog-fill c" id="li-imp-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top-line"></div>
+        <div class="card-label">Engagements · Latest Period</div>
+        <div class="big-number" style="color:var(--orange);" id="li-engagements">—</div>
+        <div class="card-sub" id="li-eng-sub">Loading…</div>
+        <div class="prog-wrap">
+          <div class="prog-row"><span>0</span><span id="li-eng-goal-label">Goal: —</span></div>
+          <div class="prog-bar">
+            <div class="prog-fill" id="li-eng-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top-line cyan"></div>
+        <div class="card-label">Followers</div>
+        <div class="big-number" style="color:var(--cyan);" id="li-followers">—</div>
+        <div class="card-sub" id="li-followers-sub">Loading…</div>
+        <div class="prog-wrap">
+          <div class="prog-row"><span>Baseline</span><span id="li-fol-goal-label">Goal: —</span></div>
+          <div class="prog-bar">
+            <div class="prog-fill c" id="li-fol-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auto-populate setup guide -->
+    <div class="card" style="margin-bottom:28px;border-color:rgba(19,201,232,0.2);background:rgba(19,201,232,0.03);">
+      <div class="card-top-line cyan"></div>
+      <div class="card-label" style="margin-bottom:12px;">🔄 How to Auto-Populate This Data</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--cyan);margin-bottom:8px;">Google Analytics 4</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.8;">
+            1. In your Google Sheet, click <strong style="color:var(--text);">Extensions → Add-ons → Get add-ons</strong><br>
+            2. Search for <strong style="color:var(--text);">"Google Analytics"</strong> (by Google LLC) and install it<br>
+            3. Go to <strong style="color:var(--text);">Extensions → Google Analytics → Create new report</strong><br>
+            4. Name it <strong style="color:var(--text);">GA_Analytics</strong> and pick your GA4 property<br>
+            5. Add metrics: <em>Active Users, Conversions</em> — dimensions: <em>Page Path, Session Source</em><br>
+            6. Set schedule to <strong style="color:var(--text);">Run reports automatically</strong> (daily or weekly)
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--cyan);margin-bottom:8px;">LinkedIn Organic</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.8;">
+            1. Go to <strong style="color:var(--text);">coupler.io</strong> and create a free account<br>
+            2. Create a new importer: <strong style="color:var(--text);">LinkedIn Pages → Google Sheets</strong><br>
+            3. Connect your LinkedIn Company Page and your Google Sheet<br>
+            4. Set the destination tab to <strong style="color:var(--text);">LI_Organic</strong><br>
+            5. Map columns: Period, Impressions, Engagements, Followers, Follower_Change<br>
+            6. Set schedule to <strong style="color:var(--text);">weekly</strong> — Coupler runs it automatically
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(19,201,232,0.15);font-size:11px;color:var(--dim);">
+        Sheet tab names must match exactly: <strong style="color:var(--muted);">GA_Analytics</strong> and <strong style="color:var(--muted);">LI_Organic</strong> — the dashboard reads these automatically.
+      </div>
+    </div>
+
+    <!-- LinkedIn Paid Ads (Placeholder) -->
+    <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+      <span style="font-size:16px;">📣</span> LinkedIn Paid Ads Analytics
+    </div>
+    <div class="card" style="border-style:dashed;border-color:var(--dim);background:transparent;">
+      <div style="display:flex;align-items:center;gap:16px;padding:8px 0;">
+        <div style="width:44px;height:44px;border-radius:10px;background:rgba(253,113,26,0.08);border:1px dashed rgba(253,113,26,0.3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📊</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--muted);margin-bottom:4px;">Coming Soon — LinkedIn Paid Ad Analytics</div>
+          <div style="font-size:12px;color:var(--dim);line-height:1.6;">
+            Add a <strong style="color:var(--muted);">LI_Paid_Analytics</strong> tab to your Google Sheet to track impressions, clicks, CTR, and spend per campaign. Data from the LinkedIn Ads section (KPI 5) feeds into this view.
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- KPI 6 — BRAND PROJECTS -->
@@ -774,6 +919,131 @@ function renderLinkedInAds(rows) {
   }).join(''):'<div style="color:var(--muted);font-size:12px;">No baseline vertical ads yet.</div>';
 }
 
+// ─── ANALYTICS ───────────────────────────────────────────────────
+// Sheet: GA_Analytics columns:
+//   Period | Unique_Visitors | Conversions | Top_Page_1 | Top_Page_1_Views |
+//   Top_Page_2 | Top_Page_2_Views | Top_Page_3 | Top_Page_3_Views |
+//   Top_Source_1 | Top_Source_2 | Top_Source_3 | Visitor_Goal | Conversion_Goal
+function renderGAAnalytics(rows) {
+  if (!rows || !rows.length) {
+    ['ga-visitors','ga-conversions'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+    });
+    document.getElementById('ga-visitors-sub').textContent = 'No data yet — see setup guide below.';
+    document.getElementById('ga-conversions-sub').textContent = 'No data yet.';
+    document.getElementById('ga-sources-list').innerHTML = '<span style="color:var(--dim);font-size:12px;">Add data to GA_Analytics sheet tab</span>';
+    document.getElementById('ga-pages-table').innerHTML = '<div style="color:var(--muted);font-size:12px;">No page data yet.</div>';
+    return;
+  }
+  // Use the most recent row
+  const latest = rows[rows.length - 1];
+  const v = Object.values(latest);
+  const period    = v[0] || 'Latest period';
+  const visitors  = v[1] != null ? Number(v[1]) : null;
+  const convs     = v[2] != null ? Number(v[2]) : null;
+  const pages     = [[v[3], v[4]], [v[5], v[6]], [v[7], v[8]]].filter(p => p[0]);
+  const sources   = [v[9], v[10], v[11]].filter(Boolean);
+  const visGoal   = v[12] != null ? Number(v[12]) : null;
+  const convGoal  = v[13] != null ? Number(v[13]) : null;
+
+  // Unique Visitors
+  document.getElementById('ga-visitors').textContent = visitors != null ? Number(visitors).toLocaleString() : '—';
+  document.getElementById('ga-visitors-sub').textContent = `Period: ${period}`;
+  if (visGoal) {
+    document.getElementById('ga-visitors-goal-label').textContent = `Goal: ${Number(visGoal).toLocaleString()}`;
+    document.getElementById('ga-visitors-fill').style.width = pct(visitors, visGoal) + '%';
+  } else {
+    document.getElementById('ga-visitors-goal-label').textContent = 'Goal: not set';
+  }
+
+  // Conversions
+  document.getElementById('ga-conversions').textContent = convs != null ? Number(convs).toLocaleString() : '—';
+  document.getElementById('ga-conversions-sub').textContent = `Period: ${period}`;
+  if (convGoal) {
+    document.getElementById('ga-conv-goal-label').textContent = `Goal: ${Number(convGoal).toLocaleString()}`;
+    document.getElementById('ga-conv-fill').style.width = pct(convs, convGoal) + '%';
+  } else {
+    document.getElementById('ga-conv-goal-label').textContent = 'Goal: not set';
+  }
+
+  // Top Sources
+  document.getElementById('ga-sources-list').innerHTML = sources.length
+    ? sources.map((s, i) => {
+        const colors = ['var(--cyan)', 'var(--orange)', 'var(--muted)'];
+        return `<div style="display:flex;align-items:center;gap:8px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:${colors[i]};flex-shrink:0;display:inline-block;"></span>
+          <span style="color:var(--text);">${s}</span>
+        </div>`;
+      }).join('')
+    : '<span style="color:var(--dim);font-size:12px;">No source data yet</span>';
+
+  // Top Pages table
+  document.getElementById('ga-pages-table').innerHTML = pages.length
+    ? `<table class="data-table">
+        <thead><tr><th>Page</th><th style="text-align:right;">Views</th></tr></thead>
+        <tbody>${pages.map(([name, views]) => `
+          <tr>
+            <td style="color:var(--text);">${name}</td>
+            <td style="text-align:right;color:var(--cyan);">${views != null ? Number(views).toLocaleString() : '—'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`
+    : '<div style="color:var(--muted);font-size:12px;">No page data yet.</div>';
+}
+
+// Sheet: LI_Organic columns:
+//   Period | Impressions | Engagements | Followers | Follower_Change |
+//   Impression_Goal | Engagement_Goal | Follower_Goal
+function renderLIOrganicAnalytics(rows) {
+  if (!rows || !rows.length) {
+    ['li-impressions','li-engagements','li-followers'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+    });
+    document.getElementById('li-impressions-sub').textContent = 'No data yet — see setup guide below.';
+    document.getElementById('li-eng-sub').textContent = 'No data yet.';
+    document.getElementById('li-followers-sub').textContent = 'No data yet.';
+    return;
+  }
+  const latest = rows[rows.length - 1];
+  const v = Object.values(latest);
+  const period    = v[0] || 'Latest period';
+  const imps      = v[1] != null ? Number(v[1]) : null;
+  const engs      = v[2] != null ? Number(v[2]) : null;
+  const followers = v[3] != null ? Number(v[3]) : null;
+  const folChange = v[4] != null ? Number(v[4]) : null;
+  const impGoal   = v[5] != null ? Number(v[5]) : null;
+  const engGoal   = v[6] != null ? Number(v[6]) : null;
+  const folGoal   = v[7] != null ? Number(v[7]) : null;
+
+  const changeLabel = folChange != null
+    ? (folChange >= 0 ? `▲ +${folChange.toLocaleString()} this period` : `▼ ${folChange.toLocaleString()} this period`)
+    : '';
+
+  // Impressions
+  document.getElementById('li-impressions').textContent = imps != null ? Number(imps).toLocaleString() : '—';
+  document.getElementById('li-impressions-sub').textContent = `Period: ${period}`;
+  if (impGoal) {
+    document.getElementById('li-imp-goal-label').textContent = `Goal: ${Number(impGoal).toLocaleString()}`;
+    document.getElementById('li-imp-fill').style.width = pct(imps, impGoal) + '%';
+  } else { document.getElementById('li-imp-goal-label').textContent = 'Goal: not set'; }
+
+  // Engagements
+  document.getElementById('li-engagements').textContent = engs != null ? Number(engs).toLocaleString() : '—';
+  document.getElementById('li-eng-sub').textContent = `Period: ${period}`;
+  if (engGoal) {
+    document.getElementById('li-eng-goal-label').textContent = `Goal: ${Number(engGoal).toLocaleString()}`;
+    document.getElementById('li-eng-fill').style.width = pct(engs, engGoal) + '%';
+  } else { document.getElementById('li-eng-goal-label').textContent = 'Goal: not set'; }
+
+  // Followers
+  document.getElementById('li-followers').textContent = followers != null ? Number(followers).toLocaleString() : '—';
+  document.getElementById('li-followers-sub').textContent = changeLabel || `Period: ${period}`;
+  if (folGoal) {
+    document.getElementById('li-fol-goal-label').textContent = `Goal: ${Number(folGoal).toLocaleString()}`;
+    document.getElementById('li-fol-fill').style.width = pct(followers, folGoal) + '%';
+  } else { document.getElementById('li-fol-goal-label').textContent = 'Goal: not set'; }
+}
+
 // ─── SCORECARD ────────────────────────────────────────────────────
 function renderScorecard(kpi) {
   const icons={inbound:'🎯',lead:'🎯',media:'📰',placement:'📰',earned:'📰',award:'🏆',blog:'✍️',newsletter:'📧',cornerstone:'📚',social:'💼',exec:'💼',linkedin:'📣',ads:'📣',website:'🌐',rebrand:'🌐'};
@@ -830,6 +1100,14 @@ function initNav() {
 
     setMsg('Loading LinkedIn ads…');
     renderLinkedInAds(await fetchSheet('LinkedIn_Ads'));
+
+    setMsg('Loading Google Analytics…');
+    try { renderGAAnalytics(await fetchSheet('GA_Analytics')); }
+    catch(e) { renderGAAnalytics([]); }
+
+    setMsg('Loading LinkedIn Organic…');
+    try { renderLIOrganicAnalytics(await fetchSheet('LI_Organic')); }
+    catch(e) { renderLIOrganicAnalytics([]); }
 
     const ls=document.getElementById('loading-screen');
     ls.classList.add('hidden'); setTimeout(()=>ls.remove(),500);
