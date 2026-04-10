@@ -12,7 +12,7 @@
       --orange:#fd711a; --cyan:#13c9e8; --bg:#0d0d0d; --surface:#161616;
       --surface2:#1e1e1e; --border:#272727; --text:#f0f0f0; --muted:#7a7a7a;
       --dim:#3a3a3a; --sidebar:230px;
-    }
+  
     html { scroll-behavior: smooth; }
     body { font-family:'Rubik','Proxima Nova','Inter',sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; }
 
@@ -650,6 +650,7 @@ const NEWSLETTER_COMPLETE = [true, false, false, false]; // Q1, Q2, Q3, Q4
 
 // Vertical name overrides for LinkedIn Ads baseline section
 // Key = person name in sheet, Value = vertical label to display
+function drawAdCanvas(cv,k){const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;function t(s,x,y,sz,c,b){ctx.font=(b?'bold ':'')+sz+'px Arial,sans-serif';ctx.fillStyle=c;ctx.fillText(s,x,y);}function rr(x,y,w,h,r,f){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();ctx.fillStyle=f;ctx.fill();}const key=k.toLowerCase();if(key==='sarah'||key.includes('cyber')){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#FF6B00');g.addColorStop(1,'#CC4400');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);t("TRUST ISN'T BUILT",20,46,20,'#fff',1);t("ON YOUR WEBSITE.",20,70,20,'#fff',1);t("It's built in conversations.",20,98,12,'#FFDDBB');t("Your LinkedIn presence matters.",20,114,12,'#FFDDBB');rr(18,132,150,20,4,'rgba(255,255,255,.9)');t("See How It Works",27,147,11,'#CC4400');rr(260,132,100,20,4,'#CC3300');t("Cybersecurity",268,147,11,'#fff');}else if(key==='lindsay'||key.includes('mar')){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0891B2');g.addColorStop(1,'#065F7B');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);t("DECISIONS DON'T",18,44,19,'#fff',1);t("HAPPEN IN THE FUNNEL.",18,68,19,'#fff',1);t("They happen in the boardroom.",18,96,12,'#BAE6FD');t("Reach those who move budgets.",18,112,12,'#BAE6FD');rr(16,130,155,20,4,'rgba(255,255,255,.9)');t("Start Targeting Now",24,145,11,'#0E7490');rr(286,130,70,20,4,'#075985');t("MarTech",293,145,11,'#fff');}else if(key==='kara'||key.includes('ed')){ctx.fillStyle='#12162A';ctx.fillRect(0,0,W,H);ctx.fillStyle='#6366F1';ctx.fillRect(0,0,W,4);t("EdTech marketing is hard right now.",16,38,14,'#E2E8FF',1);t("But your buyers are still on LinkedIn.",16,60,11,'#94A3B8');[['3.2x','higher CTR'],['67%','lower CPL'],['2x','pipeline']].forEach(([n,l],i)=>{const x=16+i*106;rr(x,74,98,36,5,'#1E2444');t(n,x+7,96,14,'#6366F1',1);t(l,x+7,108,9,'#64748B');});rr(16,124,178,20,5,'#6366F1');t("See the EdTech Playbook",24,138,10,'#fff');rr(290,124,62,20,5,'#1E2444');t("EdTech",297,138,11,'#6366F1');}else if(key==='rebecca'||key.includes('robot')){ctx.fillStyle='#F5F5F8';ctx.fillRect(0,0,W,H);ctx.fillStyle='#10B981';ctx.fillRect(0,0,5,H);t("How buyers feel when your story",18,34,13,'#1E1E3A',1);t("only makes sense to engineers.",18,52,13,'#1E1E3A',1);rr(14,66,W-28,46,5,'#E2E8F0');t('"We loved the tech. We had no idea',22,84,10,'#475569');t('what problem it solved." -- VP Ops',22,98,10,'#475569');t("Speak to buyers, not just builders.",18,130,11,'#374151');rr(18,142,155,20,4,'#10B981');t("Fix Your Positioning",27,156,10,'#fff');rr(278,142,80,20,4,'#D1FAE5');t("Robotics",285,156,10,'#059669');}}
 const VERTICAL_NAMES = {
   'lindsay': 'MarTech',
   'rebecca': 'Robotics',
@@ -909,6 +910,7 @@ function renderLinkedInAds(rows) {
       <div class="vertical-tag">${verticalLabel}</div>
       <div class="campaign-card">
         <div class="campaign-card-top-line" style="background:${accents[i%4]};"></div>
+        <canvas data-v="${rawLabel.toLowerCase()}" width="360" height="160" style="width:100%;border-radius:6px;margin:6px 0 10px;display:block;"></canvas>
         ${v[2]?`<div style="font-size:13px;font-weight:600;margin-bottom:6px;">${v[2]}</div>`:''}
         ${v[3]?`<div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;">${v[3]}</div>`:''}
         ${chips(v)?`<div>${chips(v)}</div>`:''}
@@ -917,6 +919,7 @@ function renderLinkedInAds(rows) {
       <a href="${v[7]||'https://www.linkedin.com/campaignmanager/'}" target="_blank" class="ad-link-btn">📊 View Performance</a>
     </div>`;
   }).join(''):'<div style="color:var(--muted);font-size:12px;">No baseline vertical ads yet.</div>';
+  document.querySelectorAll('#vertical-ads-grid canvas[data-v]').forEach(c=>drawAdCanvas(c,c.dataset.v));
 }
 
 // ─── ANALYTICS ───────────────────────────────────────────────────
