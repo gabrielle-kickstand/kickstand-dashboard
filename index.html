@@ -15,7 +15,6 @@
   
     html { scroll-behavior: smooth; }
     body { font-family:'Rubik','Proxima Nova','Inter',sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; }
-
     .sidebar { width:var(--sidebar); min-height:100vh; background:var(--surface); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; z-index:100; overflow-y:auto; }
     .sidebar-logo { padding:28px 22px 22px; border-bottom:1px solid var(--border); flex-shrink:0; }
     .logo-text { font-size:17px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; }
@@ -939,7 +938,7 @@ function renderGAAnalytics(rows) {
   }
   // Use the most recent row
   const latest = rows[rows.length - 1];
-  const v = Object.values(latest);
+  const gc=(...ns)=>{for(const n of ns)if(latest[n]!=null)return latest[n];return null}; const v=Object.values(latest);
   const period    = v[0] || 'Latest period';
   const visitors  = v[1] != null ? Number(v[1]) : null;
   const convs     = v[2] != null ? Number(v[2]) : null;
@@ -1007,13 +1006,13 @@ function renderLIOrganicAnalytics(rows) {
     return;
   }
   const latest = rows[rows.length - 1];
-  const v = Object.values(latest);
-  const period    = v[0] || 'Latest period';
-  const imps      = v[1] != null ? Number(v[1]) : null;
-  const engs      = v[2] != null ? Number(v[2]) : null;
-  const followers = v[3] != null ? Number(v[3]) : null;
-  const folChange = v[4] != null ? Number(v[4]) : null;
-  const impGoal   = v[5] != null ? Number(v[5]) : null;
+  const gc=(...ns)=>{for(const n of ns)if(latest[n]!=null)return latest[n];return null}; const v=Object.values(latest);
+        const period    = gc('Report Date','Period') || 'Latest period';
+                const imps      = gc('Performance Impressions','Impressions')!=null?Number(gc('Performance Impressions','Impressions')):null;
+                        const engs      = gc('Performance Clicks','Engagements')!=null?Number(gc('Performance Clicks','Engagements')):null;
+                                const followers = gc('Followers')!=null?Number(gc('Followers')):0;
+                                        const folChange = gc('Follower_Change')!=null?Number(gc('Follower_Change')):0;
+                                          const impGoal   = v[5] != null ? Number(v[5]) : null;
   const engGoal   = v[6] != null ? Number(v[6]) : null;
   const folGoal   = v[7] != null ? Number(v[7]) : null;
 
