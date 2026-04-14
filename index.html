@@ -1007,8 +1007,8 @@ function renderLIOrganicAnalytics(rows) {
   }
   const latest = rows[rows.length - 1];
   const gc=(...ns)=>{for(const n of ns)if(latest[n]!=null)return latest[n];return null}; const v=Object.values(latest);
-                const period    = gc('Report: Date','Period') || 'Latest period';
-                        const imps      = gc('Performance: Impressions','Impressions')!=null?Number(gc('Performance: Impressions','Impressions')):null;
+                        const period    = (v=>{const m=v&&v.match&&v.match(/Date\((\d+),(\d+),(\d+)\)/);return m?new Date(+m[1],+m[2],+m[3]).toLocaleDateString('en-US',{month:'short',year:'numeric'}):(v||'Latest period');})(gc('Report: Date','Period'));
+                                const imps      = gc('Performance: Impressions','Impressions')!=null?Number(gc('Performance: Impressions','Impressions')):null;
                                 const engs      = gc('Performance: Clicks','Engagements')!=null?Number(gc('Performance: Clicks','Engagements')):null;
                                                         const followers = gc('Followers')!=null?Number(gc('Followers')):0;
                                         const folChange = gc('Follower_Change')!=null?Number(gc('Follower_Change')):0;
