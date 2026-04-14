@@ -1007,10 +1007,10 @@ function renderLIOrganicAnalytics(rows) {
   }
   const latest = rows[rows.length - 1];
   const gc=(...ns)=>{for(const n of ns)if(latest[n]!=null)return latest[n];return null}; const v=Object.values(latest);
-        const period    = gc('Report Date','Period') || 'Latest period';
-                const imps      = gc('Performance Impressions','Impressions')!=null?Number(gc('Performance Impressions','Impressions')):null;
-                        const engs      = gc('Performance Clicks','Engagements')!=null?Number(gc('Performance Clicks','Engagements')):null;
-                                const followers = gc('Followers')!=null?Number(gc('Followers')):0;
+                const period    = gc('Report: Date','Period') || 'Latest period';
+                        const imps      = gc('Performance: Impressions','Impressions')!=null?Number(gc('Performance: Impressions','Impressions')):null;
+                                const engs      = gc('Performance: Clicks','Engagements')!=null?Number(gc('Performance: Clicks','Engagements')):null;
+                                                        const followers = gc('Followers')!=null?Number(gc('Followers')):0;
                                         const folChange = gc('Follower_Change')!=null?Number(gc('Follower_Change')):0;
                                           const impGoal   = v[5] != null ? Number(v[5]) : null;
   const engGoal   = v[6] != null ? Number(v[6]) : null;
