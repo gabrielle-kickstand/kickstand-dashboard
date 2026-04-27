@@ -728,8 +728,7 @@ function renderYearProgress() {
 function renderLeadGen(kpi, yp) {
   const row = kpi.find(r=>String(Object.values(r)[0]||'').toLowerCase().match(/inbound|lead/));
   if (!row) return;
-  const v=Object.values(row), cur=v[2]??0, goal=v[3]??15, pacing=v[4], status=v[6], updated=v[7];
-  if (updated) document.getElementById('last-updated').textContent = String(updated).substring(0,10);
+    const v=Object.values(row), cur=v[2]??0, goal=v[3]??15, pacing=v[4], updated=v[7]; const status=pacing!=null?(cur>=Number(pacing)?'On Track':'Behind'):(v[6]||'—');  if (updated) document.getElementById('last-updated').textContent = String(updated).substring(0,10);
   const fp=pct(cur,goal);
   const b=document.getElementById('lead-status-badge'); b.className=`badge ${badgeClass(status)}`; b.textContent=status||'—';
   document.getElementById('lead-big-num').innerHTML    = `${fmt(cur)} <span class="of">/ ${fmt(goal)}</span>`;
@@ -942,8 +941,7 @@ function renderGAAnalytics(rows) {
   const period    = v[0] || 'Latest period';
   const visitors  = v[1] != null ? Number(v[1]) : null;
   const convs     = v[2] != null ? Number(v[2]) : null;
-  const pages     = [[v[3], v[4]], [v[5], v[6]], [v[7], v[8]]].filter(p => p[0]);
-  const sources   = [v[9], v[10], v[11]].filter(Boolean);
+    const pages     = [[v[3], v[4]], [v[5], v[6]], [v[7], v[8]], [v[14],v[15]], [v[16],v[17]], [v[18],v[19]], [v[20],v[21]], [v[22],v[23]], [v[24],v[25]], [v[26],v[27]]].filter(p => p[0]);  const sources   = [v[9], v[10], v[11]].filter(Boolean);
   const visGoal   = v[12] != null ? Number(v[12]) : null;
   const convGoal  = v[13] != null ? Number(v[13]) : null;
 
@@ -1004,9 +1002,9 @@ function renderLIOrganicAnalytics(rows) {
     document.getElementById('li-eng-sub').textContent = 'No data yet.';
     document.getElementById('li-followers-sub').textContent = 'No data yet.';
     return;
-  }
+  
   const latest = rows[rows.length - 1];
-  const gc=(...ns)=>{for(const n of ns)if(latest[n]!=null)return latest[n];return null}; const v=Object.values(latest);
+  const gc=(...ns)=>{for(const n of ns)if(latest[!=null)return latest[n];return null}; const v=Object.values(latest);
                         const period    = (v=>{const m=v&&v.match&&v.match(/Date\((\d+),(\d+),(\d+)\)/);return m?new Date(+m[1],+m[2],+m[3]).toLocaleDateString('en-US',{month:'short',year:'numeric'}):(v||'Latest period');})(gc('Report: Date','Period'));
                                 const imps      = gc('Performance: Impressions','Impressions')!=null?Number(gc('Performance: Impressions','Impressions')):null;
                                 const engs      = gc('Performance: Clicks','Engagements')!=null?Number(gc('Performance: Clicks','Engagements')):null;
