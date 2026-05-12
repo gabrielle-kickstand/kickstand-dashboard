@@ -1004,7 +1004,7 @@ function renderLIOrganicAnalytics(rows) {
     return;
   
   const latest = rows[rows.length - 1];
-  const gc=(...ns)=>{for(const n of ns)if(latest[!=null)return latest[n];return null}; const v=Object.values(latest);
+  const gc=(...ns)=>{for(const n of ns)if(latest[n]!=null)return latest[n];return null}; const v=Object.values(latest);
                         const period    = (v=>{const m=v&&v.match&&v.match(/Date\((\d+),(\d+),(\d+)\)/);return m?new Date(+m[1],+m[2],+m[3]).toLocaleDateString('en-US',{month:'short',year:'numeric'}):(v||'Latest period');})(gc('Report: Date','Period'));
                                 const imps      = gc('Performance: Impressions','Impressions')!=null?Number(gc('Performance: Impressions','Impressions')):null;
                                 const engs      = gc('Performance: Clicks','Engagements')!=null?Number(gc('Performance: Clicks','Engagements')):null;
