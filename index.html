@@ -1002,6 +1002,7 @@ function renderLIOrganicAnalytics(rows) {
     document.getElementById('li-eng-sub').textContent = 'No data yet.';
     document.getElementById('li-followers-sub').textContent = 'No data yet.';
     return;
+}
   
   const latest = rows[rows.length - 1];
   const gc=(...ns)=>{for(const n of ns)if(latest[n]!=null)return latest[n];return null}; const v=Object.values(latest);
